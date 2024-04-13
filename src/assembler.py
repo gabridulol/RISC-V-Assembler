@@ -104,10 +104,72 @@ def opcode(instructionType):
     return opcodeValue
 
 def funct3(instruction):
+    funct3Dictionary = {
+        "add": "000",
+        "sub": "000",
+        "sll": "001",
+        "xor": "100",
+        "srl": "101",
+        "sra": "101",
+        "or": "110",
+        "and": "111",
+        "lr.d": "011",
+        "sc.d": "011",
+        "lb": "000",
+        "lh": "001",
+        "lw": "010",
+        "ld": "011",
+        "lbu": "100",
+        "lhu": "101",
+        "lwu": "110",
+        "addi": "000",
+        "slli": "001",
+        "xori": "100",
+        "srli": "101",
+        "srai": "101",
+        "ori": "110",
+        "andi": "111",
+        "jalr": "000",
+        "sb": "000",
+        "sh": "001",
+        "sw": "010",
+        "sd": "111",
+        "beq": "000",
+        "bne": "001",
+        "blt": "100",
+        "bge": "101",
+        "bltu": "110",
+        "bgeu": "111",
+    }
+    funct3Value = funct3Dictionary.get(instruction)
+    if funct3Value == None:
+        return f"Invalid instruction '{instruction}'"
+    return funct3Value
 
 def funct7(instruction):
+    funct7Dictionary = {
+        "add": "0000000",
+        "sub": "0100000",
+        "sll": "0000000",
+        "xor": "0000000",
+        "srl": "0000000",
+        "sra": "0100000",
+        "or": "0000000",
+        "and": "0000000",
+        "lr.d": "0001000",
+        "sc.d": "0001000",
+        "slli": "0000000",
+        "srli": "0000000",
+        "srai": "0100000",
+    }
+    funct7Value = funct7Dictionary.get(instruction)
+    if funct7Value == None:
+        return f"Invalid instruction '{instruction}'"
+    return funct7Value
+
 
 def immediate(immediate):
+    return 0;
 
 def register(register):
     registerDictionary = {
@@ -148,3 +210,6 @@ def register(register):
     if registerValue == None:
         return f"Invalid register '{register}'"
     return registerValue
+
+def assembler(instructionLine):
+    print(f"Instruction type: {instruction(instructionLine)}")
