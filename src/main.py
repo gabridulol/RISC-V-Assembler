@@ -4,4 +4,3 @@
 from assembler import*
 
 print("RISC-V Assembler")
-assembler("add")
