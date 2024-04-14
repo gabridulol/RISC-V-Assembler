@@ -183,16 +183,7 @@ def register(register):
         "x0": "00000",
         "x1": "00001",
         "x2": "00010",
-        "x3": "00011",def immediate(immediate):
-    if (immediate.startswith("0x") or immediate.startswith("-0x")):
-        immediate = int(immediate, 16)
-    else:
-        immediate = int(immediate)
-    
-    if (immediate >= 0):
-        return format(immediate, '020b')
-    else:
-        return format((1 << 20) + immediate, '020b')
+        "x3": "00011",
         "x4": "00100",
         "x5": "00101",
         "x6": "00110",
