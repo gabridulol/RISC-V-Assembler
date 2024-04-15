@@ -174,9 +174,9 @@ def immediate(immediate):
         immediate = int(immediate)
     
     if (immediate >= 0):
-        return format(immediate, '020b')
+        print(format(immediate, '020b'))
     else:
-        return format((1 << 20) + immediate, '020b')
+        print(format((1 << 20) + immediate, '020b'))
 
 def register(register):
     registerDictionary = {
@@ -218,5 +218,20 @@ def register(register):
         return f"Invalid register '{register}'"
     return registerValue
 
-def assembler(instructionLine):
-    print(f"Instruction type: {instruction(instructionLine)}")
+def assembler(instruction, file):
+    print(instruction)
+    file.write("Machine Language" + "\n")
+
+def reader(filename):
+    inputFile = open("src/inputs/" + filename, "r")
+    outputFile = open("src/outputs/" + filename, "w")
+    for instruction in inputFile:
+        assembler(formater(instruction), outputFile)
+
+def formater(instruction):
+    instruction = instruction.strip()
+    instruction = instruction.replace(",", "")
+    instruction = instruction.replace("(", "")
+    instruction = instruction.replace(")", " ")
+    instruction = instruction.split()
+    return instruction
