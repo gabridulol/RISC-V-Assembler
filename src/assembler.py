@@ -220,20 +220,18 @@ def register(register):
 def assembler(instructionLine, file):
     if instruction(instructionLine[0]) == "R":
         file.write(f"{funct7(instructionLine[0])}{register(instructionLine[3])}{register(instructionLine[2])}{funct3(instructionLine[0])}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n")
-    elif instruction(instructionLine[0]) == "Il":
-        file.write("immediate[11:0] rs1 funct3 rd opcode\n")
+    elif instruction(instructionLine[0]) == "Il" or instruction(instructionLine[0]) == "Ij":
+        file.write(f"{immediate(instructionLine[2])[0:12]}{register(instructionLine[3])}{funct3(instructionLine[0])}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n")
     elif instruction(instructionLine[0]) == "Ii":
-        file.write("immediate[11:0] rs1 funct3 rd opcode\n")
-    elif instruction(instructionLine[0]) == "Ij":
-        file.write("immediate[11:0] rs1 funct3 rd opcode\n")
+        file.write(f"{immediate(instructionLine[3])[0:12]}{register(instructionLine[2])}{funct3(instructionLine[0])}{register(instructionLine[1])}{opcode(instruction(instructionLine[[0]]))}\n")
     elif instruction(instructionLine[0]) == "S":
         file.write(f"{immediate(instructionLine[2])[5:12]}{register(instructionLine[1])}{register(instructionLine[3])}{funct3(instructionLine[0])}{immediate(instructionLine[2])[0:5]}{opcode(instruction(instructionLine[0]))}\n")
     elif instruction(instructionLine[0]) == "SB":
-        file.write("immed[12] immed[10:5] rs2 rs1 funct3 imm[4:1] imm[11] opcode\n")
-    elif instruction(instructionLine[0]) == "UJ":
-        file.write("immed[20] immed[10:1] immed[11] immed[19:12] rd opcode\n")
+        file.write(f"{immediate(instructionLine[3])[12:13]}{immediate(instructionLine[3])[5:11]}{register(instructionLine[2])}{register(instructionLine[1])}{funct3(instructionLine[0])}{immediate(instructionLine[3])[1:5]}{immediate(instructionLine[3])[11:12]}{opcode(instruction(instructionLine[0]))}\n")
+#    elif instruction(instructionLine[0]) == "UJ":
+#        file.write(f"{immediate(instructionLine[2])[19:20]}{immediate(instruction[2])[0:10]}{immediate(instructionLine[2])[10:11]}{immediate(instructionLine[2])[11:19]}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n")
     elif instruction(instructionLine[0]) == "U":
-        file.write("immed[31:12] rd opcode\n")
+        file.write(f"{immediate(instructionLine[2])[0:20]}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n")
     elif instruction(instructionLine[0]) == "PS":
         file.write("mv -> addi / R-type\nli -> addi / I-type\nj -> jal / UJ-type\nla -> lui + addi / U-type + I-type\n")
 
