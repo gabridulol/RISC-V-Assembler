@@ -228,8 +228,8 @@ def assembler(instructionLine, file):
         file.write(f"{immediate(instructionLine[2])[5:12]}{register(instructionLine[1])}{register(instructionLine[3])}{funct3(instructionLine[0])}{immediate(instructionLine[2])[0:5]}{opcode(instruction(instructionLine[0]))}\n")
     elif instruction(instructionLine[0]) == "SB":
         file.write(f"{immediate(instructionLine[3])[12:13]}{immediate(instructionLine[3])[5:11]}{register(instructionLine[2])}{register(instructionLine[1])}{funct3(instructionLine[0])}{immediate(instructionLine[3])[1:5]}{immediate(instructionLine[3])[11:12]}{opcode(instruction(instructionLine[0]))}\n")
-#    elif instruction(instructionLine[0]) == "UJ":
-#        file.write(f"{immediate(instructionLine[2])[19:20]}{immediate(instruction[2])[0:10]}{immediate(instructionLine[2])[10:11]}{immediate(instructionLine[2])[11:19]}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n")
+    elif instruction(instructionLine[0]) == "UJ":
+        file.write(f"{immediate(instructionLine[2])[19:20]}{immediate(instructionLine[2])[0:10]}{immediate(instructionLine[2])[10:11]}{immediate(instructionLine[2])[11:19]}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n")
     elif instruction(instructionLine[0]) == "U":
         file.write(f"{immediate(instructionLine[2])[0:20]}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n")
     elif instruction(instructionLine[0]) == "PS":
