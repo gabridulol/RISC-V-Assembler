@@ -172,11 +172,10 @@ def immediate(immediate):
         immediate = int(immediate, 16)
     else:
         immediate = int(immediate)
-    
     if (immediate >= 0):
-        print(format(immediate, '020b'))
+        return format(immediate, '020b')
     else:
-        print(format((1 << 20) + immediate, '020b'))
+        return format((1 << 20) + immediate, '020b')
 
 def register(register):
     registerDictionary = {
@@ -218,20 +217,39 @@ def register(register):
         return f"Invalid register '{register}'"
     return registerValue
 
-def assembler(instruction, file):
-    print(instruction)
-    file.write("Machine Language" + "\n")
+def assembler(instructionLine, file):
+    if instruction(instructionLine[0]) == "R":
+        file.write(f"{funct7(instructionLine[0])}{register(instructionLine[3])}{register(instructionLine[2])}{funct3(instructionLine[0])}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n")
+    elif instruction(instructionLine[0]) == "Il":
+        file.write("immediate[11:0] rs1 funct3 rd opcode\n")
+    elif instruction(instructionLine[0]) == "Ii":
+        file.write("immediate[11:0] rs1 funct3 rd opcode\n")
+    elif instruction(instructionLine[0]) == "Ij":
+        file.write("immediate[11:0] rs1 funct3 rd opcode\n")
+    elif instruction(instructionLine[0]) == "S":
+        file.write(f"{immediate(instructionLine[2])[5:12]}{register(instructionLine[1])}{register(instructionLine[3])}{funct3(instructionLine[0])}{immediate(instructionLine[2])[0:5]}{opcode(instruction(instructionLine[0]))}\n")
+    elif instruction(instructionLine[0]) == "SB":
+        file.write("immed[12] immed[10:5] rs2 rs1 funct3 imm[4:1] imm[11] opcode\n")
+    elif instruction(instructionLine[0]) == "UJ":
+        file.write("immed[20] immed[10:1] immed[11] immed[19:12] rd opcode\n")
+    elif instruction(instructionLine[0]) == "U":
+        file.write("immed[31:12] rd opcode\n")
+    elif instruction(instructionLine[0]) == "PS":
+        file.write("mv -> addi / R-type\nli -> addi / I-type\nj -> jal / UJ-type\nla -> lui + addi / U-type + I-type\n")
+
 
 def reader(filename):
     inputFile = open("src/inputs/" + filename, "r")
     outputFile = open("src/outputs/" + filename, "w")
     for instruction in inputFile:
         assembler(formater(instruction), outputFile)
+    inputFile.close()
+    outputFile.close()
 
 def formater(instruction):
     instruction = instruction.strip()
     instruction = instruction.replace(",", "")
-    instruction = instruction.replace("(", "")
-    instruction = instruction.replace(")", " ")
+    instruction = instruction.replace("(", " ")
+    instruction = instruction.replace(")", "")
     instruction = instruction.split()
     return instruction
