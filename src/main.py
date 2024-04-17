@@ -3,10 +3,7 @@
 
 from assembler import*
 
-
-#print("RISC-V Assembler")
-#print("Please provide the name of the input file located in the input directory...")
-#filename = input("Filename: ")
-reader("input.asm")
-
-#main()
+print("RISC-V Assembler")
+print("Please provide the name of the input file located in the input directory...")
+filename = input("Filename: ")
+reader(filename)

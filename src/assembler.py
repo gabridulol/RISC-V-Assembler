@@ -1,4 +1,6 @@
-# My instructions {lb, sb, add, and, ori, sll, bne}
+# {lb, sb, add, and, ori, sll, bne}
+
+# Source: Computer Organization and Design RISC-V Edition: The Hardware Software Interface
 
 # R-type (Arithmetic instructions format)
 # funct7 rs2 rs1 funct3 rd opcode
@@ -23,9 +25,6 @@
 # li -> addi / I-type
 # j -> jal / UJ-type
 # la -> lui + addi / U-type + I-type
-
-import argparse
-import os
 
 def instruction(instruction):
     instructionDictionary = {
@@ -78,11 +77,11 @@ def instruction(instruction):
         # U-type
         "lui": "U",
 
-        # PS-type - IMPLEMENTAÇÃO DIFE
-        "mv": "PS",
-        "li": "PS",
-        "j": "PS",
-        "la": "PS"
+        # PS-type
+        # "mv": "PS",
+        # "li": "PS",
+        # "j": "PS",
+        # "la": "PS"
     }
     instructionType = instructionDictionary.get(instruction)
     if instructionType == None:
@@ -96,10 +95,10 @@ def opcode(instructionType):
         "Ii": "0010011",
         "Ij": "1100111",
         "S": "0100011",
-        "SB": "1100011",
+        "SB": "1100111",
         "UJ": "1101111",
         "U": "0110111",
-        "PS": "PS"
+        # "PS": "PS"
     }
     opcodeValue = opcodeDictionary.get(instructionType)
     if opcodeValue == None:
@@ -176,9 +175,11 @@ def immediate(immediate):
     else:
         immediate = int(immediate)
     if (immediate >= 0):
-        return format(immediate, '020b')
+        binary = format(immediate, '032b')
+        return binary[::-1]
     else:
-        return format((1 << 20) + immediate, '020b')
+        binary = format((1 << 32) + immediate, '032b')
+        return binary[::-1]
 
 def register(register):
     registerDictionary = {
@@ -224,20 +225,19 @@ def assembler(instructionLine, file):
     if instruction(instructionLine[0]) == "R":
         file.write(f"{funct7(instructionLine[0])}{register(instructionLine[3])}{register(instructionLine[2])}{funct3(instructionLine[0])}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n")
     elif instruction(instructionLine[0]) == "Il" or instruction(instructionLine[0]) == "Ij":
-        file.write(f"{immediate(instructionLine[2])[8:20]}{register(instructionLine[3])}{funct3(instructionLine[0])}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n")
+        file.write(f"{immediate(instructionLine[2])[0:12][::-1]}{register(instructionLine[3])}{funct3(instructionLine[0])}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n")
     elif instruction(instructionLine[0]) == "Ii":
-        file.write(f"{immediate(instructionLine[3])[8:20]}{register(instructionLine[2])}{funct3(instructionLine[0])}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n")
+        file.write(f"{immediate(instructionLine[3])[0:12][::-1]}{register(instructionLine[2])}{funct3(instructionLine[0])}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n")
     elif instruction(instructionLine[0]) == "S":
-        file.write(f"{immediate(instructionLine[2])[5:12]}{register(instructionLine[1])}{register(instructionLine[3])}{funct3(instructionLine[0])}{immediate(instructionLine[2])[0:5]}{opcode(instruction(instructionLine[0]))}\n")
+        file.write(f"{immediate(instructionLine[2])[5:12][::-1]}{register(instructionLine[1])}{register(instructionLine[3])}{funct3(instructionLine[0])}{immediate(instructionLine[2])[0:5][::-1]}{opcode(instruction(instructionLine[0]))}\n")
     elif instruction(instructionLine[0]) == "SB":
-        file.write(f"{immediate(instructionLine[3])[19]}{immediate(instructionLine[3])[9:15]}{register(instructionLine[2])}{register(instructionLine[1])}{funct3(instructionLine[0])}{immediate(instructionLine[3])[15:19]}{immediate(instructionLine[3])[8]}{opcode(instruction(instructionLine[0]))}\n")
-    elif instruction(instructionLine[0]) == "UJ":
-        file.write(f"{immediate(instructionLine[2])[0]}{immediate(instructionLine[2])[10:20]}{immediate(instructionLine[2])[8]}{immediate(instructionLine[2])[1:9]}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n")
-    elif instruction(instructionLine[0]) == "U":
-        file.write(f"{immediate(instructionLine[2])[0:20]}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n")
-    elif instruction(instructionLine[0]) == "PS":
-        file.write("mv -> addi / R-type\nli -> addi / I-type\nj -> jal / UJ-type\nla -> lui + addi / U-type + I-type\n")
-
+        file.write(f"{immediate(instructionLine[3])[12][::-1]}{immediate(instructionLine[3])[5:11][::-1]}{register(instructionLine[2])}{register(instructionLine[1])}{funct3(instructionLine[0])}{immediate(instructionLine[3])[1:5][::-1]}{immediate(instructionLine[3])[11][::-1]}{opcode(instruction(instructionLine[0]))}\n")
+    elif instruction(instructionLine[0]) == "UJ": # Verificar
+        file.write(f"{immediate(instructionLine[2])[20][::-1]}{immediate(instructionLine[2])[1:11][::-1]}{immediate(instructionLine[2])[11][::-1]}{immediate(instructionLine[2])[12:20][::-1]}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n")
+    elif instruction(instructionLine[0]) == "U": # Verificar
+        file.write(f"{immediate(instructionLine[2])[12:32][::-1]}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n")
+    # elif instruction(instructionLine[0]) == "PS":
+    #     file.write("mv -> addi / R-type\nli -> addi / I-type\nj -> jal / UJ-type\nla -> lui + addi / U-type + I-type\n")
 
 def reader(filename):
     inputFile = open("src/inputs/" + filename, "r")
@@ -254,17 +254,3 @@ def formater(instruction):
     instruction = instruction.replace(")", "")
     instruction = instruction.split()
     return instruction
-
-
-def main():
-    parser = argparse.ArgumentParser(description='Montador de arquivos .asm')
-    parser.add_argument('input_file', type=str, help='O arquivo .asm a ser montado')
-    parser.add_argument('-o', '--output_file', type=str, help='O arquivo de saída onde as instruções em binário serão salvas')
-
-    args = parser.parse_args()
-
-    # Substitua process_file() por reader()
-    reader(args.input_file, args.output_file)
-
-if __name__ == "__main__":
-    main()
