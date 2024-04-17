@@ -24,6 +24,9 @@
 # j -> jal / UJ-type
 # la -> lui + addi / U-type + I-type
 
+import argparse
+import os
+
 def instruction(instruction):
     instructionDictionary = {
         # R-type
@@ -221,15 +224,15 @@ def assembler(instructionLine, file):
     if instruction(instructionLine[0]) == "R":
         file.write(f"{funct7(instructionLine[0])}{register(instructionLine[3])}{register(instructionLine[2])}{funct3(instructionLine[0])}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n")
     elif instruction(instructionLine[0]) == "Il" or instruction(instructionLine[0]) == "Ij":
-        file.write(f"{immediate(instructionLine[2])[0:12]}{register(instructionLine[3])}{funct3(instructionLine[0])}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n")
+        file.write(f"{immediate(instructionLine[2])[8:20]}{register(instructionLine[3])}{funct3(instructionLine[0])}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n")
     elif instruction(instructionLine[0]) == "Ii":
-        file.write(f"{immediate(instructionLine[3])[0:12]}{register(instructionLine[2])}{funct3(instructionLine[0])}{register(instructionLine[1])}{opcode(instruction(instructionLine[[0]]))}\n")
+        file.write(f"{immediate(instructionLine[3])[8:20]}{register(instructionLine[2])}{funct3(instructionLine[0])}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n")
     elif instruction(instructionLine[0]) == "S":
         file.write(f"{immediate(instructionLine[2])[5:12]}{register(instructionLine[1])}{register(instructionLine[3])}{funct3(instructionLine[0])}{immediate(instructionLine[2])[0:5]}{opcode(instruction(instructionLine[0]))}\n")
     elif instruction(instructionLine[0]) == "SB":
-        file.write(f"{immediate(instructionLine[3])[12:13]}{immediate(instructionLine[3])[5:11]}{register(instructionLine[2])}{register(instructionLine[1])}{funct3(instructionLine[0])}{immediate(instructionLine[3])[1:5]}{immediate(instructionLine[3])[11:12]}{opcode(instruction(instructionLine[0]))}\n")
+        file.write(f"{immediate(instructionLine[3])[19]}{immediate(instructionLine[3])[9:15]}{register(instructionLine[2])}{register(instructionLine[1])}{funct3(instructionLine[0])}{immediate(instructionLine[3])[15:19]}{immediate(instructionLine[3])[8]}{opcode(instruction(instructionLine[0]))}\n")
     elif instruction(instructionLine[0]) == "UJ":
-        file.write(f"{immediate(instructionLine[2])[19:20]}{immediate(instructionLine[2])[0:10]}{immediate(instructionLine[2])[10:11]}{immediate(instructionLine[2])[11:19]}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n")
+        file.write(f"{immediate(instructionLine[2])[0]}{immediate(instructionLine[2])[10:20]}{immediate(instructionLine[2])[8]}{immediate(instructionLine[2])[1:9]}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n")
     elif instruction(instructionLine[0]) == "U":
         file.write(f"{immediate(instructionLine[2])[0:20]}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n")
     elif instruction(instructionLine[0]) == "PS":
@@ -251,3 +254,17 @@ def formater(instruction):
     instruction = instruction.replace(")", "")
     instruction = instruction.split()
     return instruction
+
+
+def main():
+    parser = argparse.ArgumentParser(description='Montador de arquivos .asm')
+    parser.add_argument('input_file', type=str, help='O arquivo .asm a ser montado')
+    parser.add_argument('-o', '--output_file', type=str, help='O arquivo de saída onde as instruções em binário serão salvas')
+
+    args = parser.parse_args()
+
+    # Substitua process_file() por reader()
+    reader(args.input_file, args.output_file)
+
+if __name__ == "__main__":
+    main()
