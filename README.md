@@ -1,5 +1,4 @@
 # RISC-V-Assembler
-
 ```
-python3 src/main.py
+python3 src/main.py <filename>.asm [-o <outputFilename>]
 ```

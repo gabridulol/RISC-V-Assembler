@@ -221,7 +221,15 @@ def register(register):
         return f"Invalid register '{register}'"
     return registerValue
 
-def assembler(instructionLine, file):
+def writer(inputFilename, outputFilename):
+    inputFile = open("src/inputs/" + inputFilename, "r")
+    outputFile = open("src/outputs/" + outputFilename + ".asm", "w")
+    for instruction in inputFile:
+        assemblerWriter(formater(instruction), outputFile)
+    inputFile.close()
+    outputFile.close()
+
+def assemblerWriter(instructionLine, file):
     if instruction(instructionLine[0]) == "R":
         file.write(f"{funct7(instructionLine[0])}{register(instructionLine[3])}{register(instructionLine[2])}{funct3(instructionLine[0])}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n")
     elif instruction(instructionLine[0]) == "Il" or instruction(instructionLine[0]) == "Ij":
@@ -241,11 +249,29 @@ def assembler(instructionLine, file):
 
 def reader(filename):
     inputFile = open("src/inputs/" + filename, "r")
-    outputFile = open("src/outputs/" + filename, "w")
+    print("RISC-V Assembler")
     for instruction in inputFile:
-        assembler(formater(instruction), outputFile)
+        print(instruction.strip())
+        print(assemblerReader(formater(instruction)).strip())
     inputFile.close()
-    outputFile.close()
+
+def assemblerReader(instructionLine):
+    if instruction(instructionLine[0]) == "R":
+        return f"{funct7(instructionLine[0])}{register(instructionLine[3])}{register(instructionLine[2])}{funct3(instructionLine[0])}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n"
+    elif instruction(instructionLine[0]) == "Il" or instruction(instructionLine[0]) == "Ij":
+        return f"{immediate(instructionLine[2])[0:12][::-1]}{register(instructionLine[3])}{funct3(instructionLine[0])}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n"
+    elif instruction(instructionLine[0]) == "Ii":
+        return f"{immediate(instructionLine[3])[0:12][::-1]}{register(instructionLine[2])}{funct3(instructionLine[0])}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n"
+    elif instruction(instructionLine[0]) == "S":
+        return f"{immediate(instructionLine[2])[5:12][::-1]}{register(instructionLine[1])}{register(instructionLine[3])}{funct3(instructionLine[0])}{immediate(instructionLine[2])[0:5][::-1]}{opcode(instruction(instructionLine[0]))}\n"
+    elif instruction(instructionLine[0]) == "SB":
+        return f"{immediate(instructionLine[3])[12][::-1]}{immediate(instructionLine[3])[5:11][::-1]}{register(instructionLine[2])}{register(instructionLine[1])}{funct3(instructionLine[0])}{immediate(instructionLine[3])[1:5][::-1]}{immediate(instructionLine[3])[11][::-1]}{opcode(instruction(instructionLine[0]))}\n"
+    elif instruction(instructionLine[0]) == "UJ": # Verificar
+        return f"{immediate(instructionLine[2])[20][::-1]}{immediate(instructionLine[2])[1:11][::-1]}{immediate(instructionLine[2])[11][::-1]}{immediate(instructionLine[2])[12:20][::-1]}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n"
+    elif instruction(instructionLine[0]) == "U": # Verificar
+        return f"{immediate(instructionLine[2])[12:32][::-1]}{register(instructionLine[1])}{opcode(instruction(instructionLine[0]))}\n"
+    # elif instruction(instructionLine[0]) == "PS":
+    #     return "mv -> addi / R-type\nli -> addi / I-type\nj -> jal / UJ-type\nla -> lui + addi / U-type + I-type\n"
 
 def formater(instruction):
     instruction = instruction.strip()
@@ -254,3 +280,5 @@ def formater(instruction):
     instruction = instruction.replace(")", "")
     instruction = instruction.split()
     return instruction
+
+
