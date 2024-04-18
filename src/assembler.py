@@ -155,14 +155,14 @@ def funct7(instruction):
         "sll": "0000000",
         "xor": "0000000",
         "srl": "0000000",
-        "sra": "0100000",
+        "sra": "0000000",
         "or": "0000000",
         "and": "0000000",
         "lr.d": "0001000",
-        "sc.d": "0001000",
-        "slli": "0000000",
-        "srli": "0000000",
-        "srai": "0100000",
+        "sc.d": "0001100",
+        # "slli": "000000",
+        # "srli": "000000",
+        # "srai": "010000",
     }
     funct7Value = funct7Dictionary.get(instruction)
     if funct7Value == None:
